@@ -870,7 +870,7 @@ def Delete_screenshot():
                 for port in scan.ports:
                     file1 =f"static/screenshot/{session.get('user')}_{target.target_name}:{port.port_num}"
                     file2 = f"static/webpage_screenshot/{session.get('user')}_{target.target_name}:{port.port_num}"
-                    file3 = f"static/subdomain/{session.get('user')}_{target.target_name}:{port:port_num}"
+                    file3 = f"static/subdomain/{session.get('user')}_{target.target_name}:{port.port_num}"
                     for dirs in scan.dirs:
                         dirs.path = ""
                     for page in scan.scaper:
