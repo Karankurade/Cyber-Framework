@@ -753,7 +753,7 @@ def UserSetting():
                 dir_count += sum(1 for d in scan.dirs if d.path)
                 scraper_count +=sum(1 for s in scan.scaper if s.path)
                 suddomain1 += sum(1 for s in scan.subdomain if s.path) 
-    total_screenshot = dir_count + scraper_count = subdomain1
+    total_screenshot = dir_count + scraper_count + subdomain1
 
     if not user:
         return redirect('/login')
