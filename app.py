@@ -602,6 +602,7 @@ def history():
     result = []
     for target in user.targets:
         for scan in target.scan:
+            if scan.scan_progess == 100:
                 result.append({
                     "name":target.target_name,
                     "id": scan.Id
