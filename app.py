@@ -884,7 +884,6 @@ def Delete_screenshot():
                         if os.path.exists(files):
                             shutil.rmtree(files)
                             deleted = True
-                            return redirect("/Settings")
 
         if deleted:
             flash("All Screenshots Deleted Successfully","Success")
