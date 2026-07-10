@@ -695,7 +695,6 @@ def delete_scan(scan_id):
                 for files in [file1,file2,file3]:
                     if os.path.exists(files):
                         shutil.rmtree(files)
-                        return redirect("/total_scan_history")
 
         db.session.delete(target)
         db.session.commit()
@@ -745,6 +744,7 @@ def UserSetting():
 
     dir_count = 0
     scraper_count = 0
+    subdomain1 = 0
     total_target = len(user.targets)
 
     for target in user.targets:
@@ -752,7 +752,8 @@ def UserSetting():
             if scan:
                 dir_count += sum(1 for d in scan.dirs if d.path)
                 scraper_count +=sum(1 for s in scan.scaper if s.path)
-    total_screenshot = dir_count + scraper_count
+                suddomain1 += sum(1 for s in scan.subdomain if s.path) 
+    total_screenshot = dir_count + scraper_count = subdomain1
 
     if not user:
         return redirect('/login')
@@ -869,12 +870,14 @@ def Delete_screenshot():
         for target in user.targets:
             for scan in target.scan:
                 for port in scan.ports:
-                    file1 =f"static/screenshot/{session.get('user')}_{target.target_name}:{port.port_num}"
-                    file2 = f"static/webpage_screenshot/{session.get('user')}_{target.target_name}:{port.port_num}"
-                    file3 = f"static/subdomain/{session.get('user')}_{target.target_name}:{port.port_num}"
+                    file1 =f"static/screenshot"
+                    file2 = f"static/webpage_screenshot"
+                    file3 = f"static/subdomain"
                     for dirs in scan.dirs:
                         dirs.path = ""
                     for page in scan.scaper:
+                        page.path = ""
+                    for page in scan.subdomain:
                         page.path = ""
                     db.session.commit()
                     for files in [file1,file2,file3]:
