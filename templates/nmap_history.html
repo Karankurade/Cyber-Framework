@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Nmap Scan Results</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/nmap_history.css') }}">
+
+    <link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    <div class="page">
+
+        <div class="topbar">
+
+            <div>
+
+                <h1>
+
+                    <i class="fa-solid fa-network-wired"></i>
+
+                    Nmap Scan Results
+
+                </h1>
+
+                <p>
+
+                    Detailed scan report for
+
+                    <b>{{ scan.target_name }}</b>
+
+                </p>
+
+            </div>
+
+            <div class="buttons">
+
+                <a href="/Scan_History">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Back
+
+                </a>
+
+                <a href="/dashboard">
+
+                    <i class="fa-solid fa-house"></i>
+
+                    Dashboard
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="summary">
+
+            <div class="summary-card">
+
+                <i class="fa-solid fa-bullseye"></i>
+
+                <h4>Target</h4>
+
+                <h2>{{ scan.target_name }}</h2>
+
+            </div>
+
+            <div class="summary-card">
+
+                <i class="fa-solid fa-plug"></i>
+
+                <h4>Open Ports</h4>
+
+                <h2>{{ scan.ports|length }}</h2>
+
+            </div>
+
+            <div class="summary-card">
+
+                <i class="fa-solid fa-server"></i>
+
+                <h4>Scan Type</h4>
+
+                <h2>Nmap</h2>
+
+            </div>
+
+        </div>
+
+        <div class="table-card">
+
+            <div class="table-header">
+
+                <h2>
+
+                    <i class="fa-solid fa-table"></i>
+
+                    Port Details
+
+                </h2>
+
+            </div>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Port</th>
+
+                        <th>Protocol</th>
+
+                        <th>Status</th>
+
+                        <th>Service</th>
+
+                        <th>Version</th>
+
+                        <th>Extra Information</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for port in scan.ports %}
+
+                    <tr>
+
+                        <td>{{ port.port_num }}</td>
+
+                        <td>{{ port.protocol }}</td>
+
+                        <td>
+
+                    <span class="status {{ port.status|lower }}">
+
+                                {{ port.status }}
+
+                            </span>
+
+                        </td>
+
+                        <td>{{ port.service }}</td>
+
+                        <td>{{ port.version }}</td>
+
+                        <td>{{ port.extraInfo }}</td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

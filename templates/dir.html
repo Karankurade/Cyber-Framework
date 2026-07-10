@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Directory Enumeration</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dir.css') }}">
+
+    <link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    <div class="page">
+
+        <div class="topbar">
+
+            <div>
+
+                <h1>
+
+                    <i class="fa-solid fa-folder-tree"></i>
+
+                    Directory Enumeration
+
+                </h1>
+
+                <p>
+
+                    Scan Results for
+
+                    <b>{{ scan.target.target_name }}</b>
+
+                </p>
+
+            </div>
+
+            <div class="top-buttons">
+
+                <a href="/Scan_History">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Back
+
+                </a>
+
+                <a href="/dashboard">
+
+                    <i class="fa-solid fa-house"></i>
+
+                    Dashboard
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="summary">
+
+            <div class="summary-card">
+
+                <i class="fa-solid fa-bullseye"></i>
+
+                <h4>Target</h4>
+
+                <h2>{{ scan.target.target_name }}</h2>
+
+            </div>
+
+            <div class="summary-card">
+
+                <i class="fa-solid fa-folder-open"></i>
+
+                <h4>Directories Found</h4>
+
+                <h2>{{ scan.dirs|length }}</h2>
+
+            </div>
+
+            <div class="summary-card">
+
+                <i class="fa-solid fa-camera"></i>
+
+                <h4>Screenshots</h4>
+
+                <h2>{{ screenshots }}</h2>
+
+            </div>
+
+        </div>
+
+        <div class="grid">
+
+        {% for dir in scan.dirs %}
+
+            <div class="card">
+
+                <div class="status
+                    {% if dir.status == 200 %}
+                        success
+                    {% elif dir.status == 301 or dir.status == 302 %}
+                        warning
+                    {% elif dir.status == 403 %}
+                        forbidden
+                    {% else %}
+                        error
+                    {% endif %}
+                ">
+
+                    {{ dir.status }}
+
+                </div>
+
+                <div class="image-box">
+
+                    <img src="../{{ dir.path }}"
+                        alt="Screenshot">
+
+                </div>
+
+                <div class="info">
+
+                    <h3>
+
+                        {{ dir.url }}
+
+                    </h3>
+
+                    <a href="{{ dir.url }}"
+                    target="_blank"
+                    class="visit">
+
+                        <i class="fa-solid fa-up-right-from-square"></i>
+
+                        Visit Website
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

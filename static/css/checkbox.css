@@ -1,0 +1,52 @@
+.toggle-bar{
+    border: 2px solid black;
+    padding: 10px;
+}
+
+.toggle{
+    position:relative;
+    border: 2px solid #f3f3f3;
+    width: 100px;
+    height: 34px;
+    display: inline-block
+}
+
+.toggle input{
+    opacity:0;
+}
+
+.slide-bar{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+
+    background-color:red;
+    border-radius:20px
+}
+
+.slide-bar:before{
+    position:absolute;
+    content:"";
+
+    left:4px;
+    bottom:4px;
+
+    width: 26px;
+    height:26px;
+
+    background-color:black;
+    border-radius:50%;
+
+    transition: .3s;
+}
+
+.toggle input:checked + slide-bar{
+    background-color:green;
+}
+
+.toggle input:checked + slide-bar:before{
+    transform:translateX(26px);
+}
+

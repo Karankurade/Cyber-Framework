@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Scan History</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/history.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="page-header">
+
+            <div>
+
+                <h1>Scan History</h1>
+
+                <p>Review previous scan results and manage targets.</p>
+
+            </div>
+
+            <a href="/Add_Target" class="add-target">
+
+                <i class="fa-solid fa-plus"></i>
+
+                New Target
+
+            </a>
+
+        </div>
+
+        {% if targets %}
+
+        {% for target in targets %}
+
+        <div class="scan-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+                        <i class="fa-solid fa-server"></i>
+
+                        {{ target.name }}
+                    </h2>
+
+                    <span class="status">
+
+                        <i class="fa-solid fa-circle"></i>
+
+                        Scan Completed
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="action-bar">
+
+                <a href="/nmap_result/{{target.id}}">
+
+                    <i class="fa-solid fa-network-wired"></i>
+
+                    Nmap
+
+                </a>
+
+                <a href="/dir/{{target.id}}">
+
+                    <i class="fa-solid fa-folder-tree"></i>
+
+                    Directories
+
+                </a>
+
+                <a href="/scraper/{{target.id}}">
+
+                    <i class="fa-solid fa-spider"></i>
+
+                    Scraper
+
+                </a>
+
+                <a href="/Subdomain/{{target.id}}">
+
+                    <i class="fa-solid fa-link"></i>
+
+                    Subdomain
+
+                </a>
+
+                <a class="delete"
+
+                href="/delete/{{target.id}}">
+
+                    <i class="fa-solid fa-trash"></i>
+
+                    Delete
+
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+        {% else %}
+        <div class="empty-card">
+
+                <i class="fa-solid fa-folder-open"></i>
+
+                <h2>
+
+                    No Scan History
+
+                </h2>
+
+                <p>
+
+                    You haven't scanned any targets yet.
+
+                </p>
+
+                <a href="/Add_Target">
+
+                    Start Your First Scan
+
+                </a>
+
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+
+</html>

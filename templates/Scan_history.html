@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Scan History</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/Scan_History1.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+
+	    {% if messages %}
+
+	        {% for category, message in messages %}
+
+		        <div class="alert alert-{{ category }}">
+
+		            <i class="fa-solid fa-circle-info"></i>
+
+		            {{ message }}
+
+		        </div>
+
+	        {% endfor %}
+
+	    {% endif %}
+
+    {% endwith %}
+
+    <div class="page">
+
+        <div class="header">
+
+            <div>
+
+                <h1>
+
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+
+                    Scan History
+
+                </h1>
+
+                <p>
+
+                    View all completed scans and their information.
+
+                </p>
+
+            </div>
+
+            <a href="/dashboard" class="dashboard-btn">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Dashboard
+
+            </a>
+
+        </div>
+
+        <form method="GET", action="/Scan_History">
+
+            <div class="search-box" id="myform">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input type="text" name="Search" placeholder="Search target...">
+
+            </div>
+        </form>
+
+        <div class="history-list">
+
+            {% if targets %}
+
+                {% for target in targets %}
+
+                <div class="history-card">
+
+                    <div class="card-top">
+
+                        <div class="target">
+
+                            <div class="icon">
+
+                                <i class="fa-solid fa-server"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h2>
+
+                                    {{ target.target_name }}
+
+                                </h2>
+
+                                <p>
+
+                                    Scan Date :
+                                    {{ target.added_on }}
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+			            <div class="status " id="status1-{{target.Id}}">
+
+                        </div>
+
+                    </div>
+
+                    <div class="details">
+
+                        <div class="detail-box">
+
+                            <i class="fa-solid fa-calendar-days"></i>
+
+                            <div>
+
+                                <small>
+
+                                    Date
+
+                                </small>
+
+                                <h3>
+
+                                    {{ target.added_on }}
+
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                        <div class="detail-box">
+
+                            <i class="fa-solid fa-network-wired"></i>
+
+                            <div>
+
+                                <small>
+
+                                    Target
+
+                                </small>
+
+                                <h3>
+
+                                    {{ target.target_name }}
+
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+			            <div class="detail-box">
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            <div>
+
+                                <small>
+
+                                    Status
+
+                                </small>
+
+				                 <h3 id="status-{{target.Id}}">
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="actions">
+
+                        <a href="/nmap_result/{{ target.Id }}">
+
+                            <i class="fa-solid fa-network-wired"></i>
+
+                            Nmap
+
+                        </a>
+
+                        <a href="/dir/{{ target.Id }}">
+
+                            <i class="fa-solid fa-folder-tree"></i>
+
+                            Directories
+
+                        </a>
+
+                        <a href="/scraper/{{ target.Id }}">
+
+                            <i class="fa-solid fa-spider"></i>
+
+                            Scraper
+
+                        </a>
+
+                        <a href="/Subdomain/{{target.Id}}">
+
+                            <i class="fa-solid fa-link"></i>
+
+                            Subdomain
+
+                        </a>
+
+                        <a href="/delete/{{ target.Id }}"
+                        class="delete">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                            Delete
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            {% else %}
+
+            <div class="empty-card">
+
+                <i class="fa-solid fa-folder-open"></i>
+
+                <h2>
+
+                    No Scan History
+
+                </h2>
+
+                <p>
+
+                    You haven't scanned any targets yet.
+
+                </p>
+
+                <a href="/Add_Target">
+
+                    Start Your First Scan
+
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+<script src="{{url_for('static',filename='js/Scan_history.js')}}"></script>
+
+</body>
+
+</html>

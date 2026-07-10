@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CyberFramework Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    <div class="sidebar">
+
+        <div class="logo">
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+            <h2>CyberFramework</h2>
+
+        </div>
+
+        <ul>
+
+            <li class="active">
+                <a href="/dashboard">
+                    <i class="fa-solid fa-chart-line"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="/Add_Target">
+                    <i class="fa-solid fa-plus"></i>
+                    Add Target
+                </a>
+            </li>
+
+            <li>
+                <a href="/Scan_History">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    Scan History
+                </a>
+            </li>
+
+            <li>
+                <a href="/Reports">
+                    <i class="fa-solid fa-file-lines"></i>
+                    Reports
+                </a>
+            </li>
+
+            <li>
+                <a href="/Settings">
+                    <i class="fa-solid fa-gear"></i>
+                    Settings
+                </a>
+            </li>
+
+            <li>
+                <a href="/logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+    <div class="main">
+
+        <div class="navbar">
+
+            <div>
+
+                <h1>Dashboard</h1>
+
+                <p>Cyber Security Management Console</p>
+
+            </div>
+
+            <div class="profile">
+
+                <i class="fa-solid fa-user-shield"></i>
+
+                <span>{{ session['user'] }}</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="stats">
+
+            <a href="/total_scan_history" class="card">
+
+                <i class="fa-solid fa-chart-column"></i>
+
+                <h2>{{count}}</h2>
+
+                <p>Total Scans</p>
+
+            </a>
+
+            <a href="/active_scans" class="card">
+
+                <i class="fa-solid fa-spinner"></i>
+
+                <h2>{{active}}</h2>
+
+                <p>Active Scans</p>
+
+            </a>
+
+            <a href="/live_host" class="card">
+
+                <i class="fa-solid fa-network-wired"></i>
+
+                <h2>{{host}}</h2>
+
+                <p>Live Hosts</p>
+
+            </a>
+
+            <a href="#" class="card">
+
+                <i class="fa-solid fa-bug"></i>
+
+                <h2>0</h2>
+
+                <p>Vulnerabilities</p>
+
+            </a>
+
+        </div>
+
+        <div class="content">
+
+            <div class="activity">
+
+                <h2>Recent Activity</h2>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Target</th>
+
+                            <th>Status</th>
+
+                            <th>Time</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {%  for target in targets  %}
+
+                        <tr>
+
+                            <td id="name-{{target.Id}}">{{target.target_name}}</td>
+
+                            <td class="starting" id="status-{{target.Id}}"></td>
+
+                            <td id="time-{{target.Id}}"></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="quick">
+
+                <h2>Quick Actions</h2>
+
+                <a href="/Add_Target">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Add Target
+
+                </a>
+
+                <a href="/Scan_History">
+
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+
+                    Scan History
+
+                </a>
+
+                <a href="#">
+
+                    <i class="fa-solid fa-file-lines"></i>
+
+                    Reports
+
+                </a>
+
+                <a href="/Settings">
+
+                    <i class="fa-solid fa-gear"></i>
+
+                    Settings
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="{{url_for('static',filename='js/dashboard.js')}}"></script>
+
+</body>
+
+</html>

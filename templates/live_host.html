@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Live Hosts</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/live_host.css') }}">
+
+    <link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="topbar">
+
+        <div>
+
+            <h1>
+
+                <i class="fa-solid fa-network-wired"></i>
+
+                Live Hosts
+
+            </h1>
+
+            <p>
+
+                Hosts discovered during network scanning
+
+            </p>
+
+        </div>
+
+        <div class="buttons">
+
+            <a href="/dashboard">
+
+                <i class="fa-solid fa-house"></i>
+
+                Dashboard
+
+            </a>
+
+            <a href="/Scan_History">
+
+                <i class="fa-solid fa-clock-rotate-left"></i>
+
+                Scan History
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="summary">
+
+        <div class="summary-card">
+
+            <i class="fa-solid fa-server"></i>
+
+            <h4>Total Live Hosts</h4>
+
+            <h2>{{ targets|length }}</h2>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fa-solid fa-heart-pulse"></i>
+
+            <h4>Status</h4>
+
+            <h2>Online</h2>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+            <h4>Framework</h4>
+
+            <h2>CyberFramework</h2>
+
+        </div>
+
+    </div>
+
+    <div class="host-grid">
+
+        {% for target in targets %}
+
+        <div class="host-card">
+
+            <div class="status">
+
+                <i class="fa-solid fa-circle"></i>
+
+                Live
+
+            </div>
+
+            <div class="host-icon">
+
+                <i class="fa-solid fa-desktop"></i>
+
+            </div>
+
+            <h2>
+
+                {{ target.target_name }}
+
+            </h2>
+
+            <p>
+
+                Target is reachable and responded successfully.
+
+            </p>
+
+            <div class="actions">
+
+                <a href="/nmap_result/{{ target.Id }}">
+
+                    <i class="fa-solid fa-network-wired"></i>
+
+                    View Scan
+
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

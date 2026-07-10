@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<head>
+	<title>Register</title>
+	<link rel='stylesheet' href="{{ url_for('static', filename='css/register.css')  }}">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+	{% with messages = get_flashed_messages(with_categories=True) %}
+
+	    {% if messages %}
+
+	        {% for category, message in messages %}
+
+		        <div class="alert alert-{{ category }}">
+
+		            <i class="fa-solid fa-circle-info"></i>
+
+		            {{ message }}
+
+		        </div>
+
+	        {% endfor %}
+
+	    {% endif %}
+
+	{% endwith %}
+	<img src="{{ url_for('static', filename='assets/register_page1.png')}}" alt="register page">
+	<div class='register-container'>
+		<div class='register-headers'>
+			<h2> Registration </h2>
+		</div>
+
+		<form method='POST'>
+			<input type='text' name='username' placeholder='Enter Username'>
+			<input type='password' name='password' placeholder='Enter Password' >
+			<input type='password' name='re-write' placeholder='Confirm password'>
+			<button type='submit'>Signup</button>
+		</form>
+		<div class='register-footer'>
+			<span>Already have an account?<a href='/login'>click here</a></span>
+		</div>
+	</div>
+</body>
+</html>

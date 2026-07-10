@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Active Scans</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/active_scan.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="header">
+
+        <div>
+
+            <h1>
+
+                <i class="fa-solid fa-radar"></i>
+
+                Active Security Scans
+
+            </h1>
+
+            <p>
+
+                Monitor every running scan in real time.
+
+            </p>
+
+        </div>
+
+        <a href="/dashboard" class="dashboard-btn">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Dashboard
+
+        </a>
+
+    </div>
+
+    {% if targets %}
+
+        {% for target in targets %}
+
+        <div class="scan-card">
+
+            <div class="card-header">
+
+                <div class="target">
+
+                    <div class="target-icon">
+
+                        <i class="fa-solid fa-server"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h2>
+
+                            {{ target.target_name }}
+
+                        </h2>
+
+                        <p>
+
+                            Scan ID :
+                            {{ target.Id }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="scan-status"
+                     id="scanStatus-{{ target.Id }}">
+
+                    Initializing...
+
+                </div>
+
+            </div>
+
+            <div class="progress-area">
+
+                <div class="progress-title">
+
+                    <span>
+
+                        Scan Progress
+
+                    </span>
+
+                    <span id="progressText-{{ target.Id }}">
+
+                        0%
+
+                    </span>
+
+                </div>
+
+                <div class="progress-bar">
+
+                    <div class="progress-fill"
+                         id="scanProgress-{{ target.Id }}">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="scan-info">
+
+                <div class="info-box">
+
+                    <i class="fa-solid fa-clock"></i>
+
+                    <div>
+
+                        <small>
+
+                            Elapsed Time
+
+                        </small>
+
+                        <h3 id="elapsedTime-{{ target.Id }}">
+
+                            00:00
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+                <div class="info-box">
+
+                    <i class="fa-solid fa-network-wired"></i>
+
+                    <div>
+
+                        <small>
+
+                            Target
+
+                        </small>
+
+                        <h3>
+
+                            {{ target.target_name }}
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+                <div class="info-box">
+
+                    <i class="fa-solid fa-circle-notch"></i>
+
+                    <div>
+
+                        <small>
+
+                            Current Status
+
+                        </small>
+
+                        <h3 id="statusText-{{ target.Id }}">
+
+                            Waiting
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="button-row">
+
+                <form method="POST">
+
+                    <button type="submit"
+                            class="start-btn"
+                            id="scan-button-{{ target.Id }}">
+
+                        <i class="fa-solid fa-play"></i>
+
+                        Start Scan
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+    <div class="empty-card">
+
+        <i class="fa-solid fa-circle-info"></i>
+
+        <h2>
+
+            No Active Scans
+
+        </h2>
+
+        <p>
+
+            There are currently no scans running.
+
+        </p>
+
+        <a href="/Add_Target">
+
+            Start New Scan
+
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<script src="{{ url_for('static', filename='js/progress_bar.js') }}"></script>
+
+</body>
+
+</html>

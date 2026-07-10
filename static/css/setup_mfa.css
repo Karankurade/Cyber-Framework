@@ -1,0 +1,206 @@
+
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+
+body{
+
+    height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:#07111d;
+
+    overflow:hidden;
+
+    color:white;
+
+}
+
+
+.background{
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+    radial-gradient(circle at top left,#00d9ff22,transparent 35%),
+    radial-gradient(circle at bottom right,#007bff22,transparent 40%),
+    #07111d;
+
+    z-index:-2;
+}
+
+.background::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background-image:
+
+    linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+
+    background-size:45px 45px;
+}
+
+
+
+.container{
+
+    width:520px;
+
+    padding:40px;
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,.12);
+
+    border-radius:20px;
+
+    text-align:center;
+
+    box-shadow:
+        0 20px 40px rgba(0,0,0,.45);
+
+}
+
+
+.header h1{
+
+    color:#00d9ff;
+
+    margin-bottom:15px;
+
+    font-size:34px;
+}
+
+.header p{
+
+    color:#d7d7d7;
+
+    line-height:1.8;
+
+    margin-bottom:30px;
+}
+
+
+
+.qrcode-box{
+
+    display:inline-block;
+
+    padding:20px;
+
+    border-radius:15px;
+
+    background:white;
+
+    margin-bottom:30px;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.35);
+
+}
+
+.qrcode-box img{
+
+    width:250px;
+
+    display:block;
+}
+
+
+.instructions{
+
+    text-align:left;
+
+    margin-bottom:35px;
+
+}
+
+.instructions h3{
+
+    color:#00d9ff;
+
+    margin-bottom:15px;
+}
+
+.instructions ol{
+
+    padding-left:22px;
+
+    line-height:2;
+
+    color:#d7d7d7;
+}
+
+
+.login-btn{
+
+    display:inline-block;
+
+    padding:14px 35px;
+
+    background:#00b7ff;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:10px;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    transition:.3s;
+}
+
+.login-btn:hover{
+
+    background:#0097d1;
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 10px 25px rgba(0,183,255,.45);
+
+}
+
+
+@media(max-width:600px){
+
+    .container{
+
+        width:92%;
+
+        padding:30px;
+    }
+
+    .qrcode-box img{
+
+        width:200px;
+    }
+
+    .header h1{
+
+        font-size:28px;
+    }
+
+}

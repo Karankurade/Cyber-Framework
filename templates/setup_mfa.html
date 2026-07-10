@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Setup MFA</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/setup_mfa.css') }}">
+
+</head>
+
+<body>
+
+    <div class="background"></div>
+
+    <div class="container">
+
+        <div class="header">
+
+            <h1>Multi-Factor Authentication</h1>
+
+            <p>
+                Secure your CyberFramework account by scanning the QR code
+                using your authenticator application.
+            </p>
+
+        </div>
+
+        <div class="qrcode-box">
+
+            <img src="data:image/png;base64,{{ qrcode }}"
+                 alt="QR Code">
+
+        </div>
+
+        <div class="instructions">
+
+            <h3>Setup Instructions</h3>
+
+            <ol>
+
+                <li>Open your Authenticator application.</li>
+
+                <li>Select <strong>Add Account</strong>.</li>
+
+                <li>Choose <strong>Scan QR Code</strong>.</li>
+
+                <li>Scan the QR code shown above.</li>
+
+                <li>Return to CyberFramework and log in.</li>
+
+            </ol>
+
+        </div>
+
+        <a href="/login" class="login-btn">
+
+            Continue to Login
+
+        </a>
+
+    </div>
+
+</body>
+</html>
