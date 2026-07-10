@@ -438,7 +438,7 @@ def directories(scan_id):
         name = scan.target.owner.Username
         user = scan.target.owner
 
-        wordlist = user.userSettings.wordlist
+        wordlist = user.userSettings.dir_wordlist
 
         ip= scan.target.target_name
         ip_addr = []
@@ -479,7 +479,9 @@ def subdomain(name,ip_addr,scan_id):
     with app.app_context():
 
         scan  = Scan.query.get(scan_id)
-        wordlist = "/home/hacker/Desktop/Cyber_framework/Modules/wordlist.txt"
+        user = scan.target.owner
+
+        wordlist = user.userSettings.subd_wordlist
 
         for target in ip_addr:
             result = subdomain_finder(name,target,wordlist)
