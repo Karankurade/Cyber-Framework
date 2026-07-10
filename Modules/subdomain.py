@@ -43,16 +43,14 @@ def subdomain_finder(name,target,wordlist):
         while not q.empty():
             try:
                 word = q.get_nowait()
-                print(f"words : {word}")
             except:
                 break
             try:
 
                 for new_url in new_urls:
                     new_url1 = f"{new_url}{word}.{target}/"
-                    print(f"url:{new_url1}")
                     try:
-                        response = requests.get(new_url1,headers=header,allow_redirects=False,verify=False,timeout=5)
+                        response = requests.get(new_url1,headers=header,allow_redirects=True,verify=False,timeout=5)
                         status = response.status_code
                         server = response.headers.get("server")
                         if status in [200,403]:
