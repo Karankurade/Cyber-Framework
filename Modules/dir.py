@@ -1,8 +1,9 @@
-import requests, os, hashlib
+import requests, os
 import threading
 from urllib.parse import urljoin
 from queue import Queue
 from Modules.screen_shot import snap_shot
+from Modules.img_hash import  get_image_hash
 
 
 def dir_search(name,target,wordlist):
@@ -94,33 +95,23 @@ def dir_search(name,target,wordlist):
                 )
 
                 if response.status_code == 200:
-                    snap_shot(
-                        new_url1,
-                        filename1
-                    )
-                    with open(filename1,"rb") as image:
-                        current_hash = hashlib.sha256(
-                            image.read()
-                        ).hexdigest()
-
-                    duplicate = False
-
+                    page_hash = get_image_hash(response.text)
+                    duplicate=False
                     with hash_lock:
-                        if current_hash in visited_img:
-                            duplicate = True
+                        if page_hash in visited_img:
+                            duplicate=True
                         else:
-                            visited_img.add(current_hash)
-
+                            visited_img.add(page_hash)
                     if duplicate:
-                        os.remove(filename1)
+                        print(f"Duplicate page: {new_url1}")
                         continue
+                    snap_shot(new_url1,filename1)
 
-                    with print_lock:
-                        result.append({
-                            "url":new_url1,
-                            "file_path":filename1,
-                            "status code":response.status_code
-                        })
+                    result.append({
+                        "url":new_url1,
+                        "file_path":filename1,
+                        "status code":response.status_code
+                    })
 
                 elif response.status_code in [301,302]:
                     with print_lock:
@@ -143,6 +134,7 @@ def dir_search(name,target,wordlist):
                             "file_path":"",
                             "status code":response.status_code
                         })
+                print(f"Visited hash:{len(visited_img)}")
 
             except Exception as e:
                 print(f"error at {e}")
@@ -161,6 +153,7 @@ def dir_search(name,target,wordlist):
     q.join()
 
     return result
+
 
 
 
