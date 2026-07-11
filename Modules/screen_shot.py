@@ -1,6 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import os
+import os, time
 
 def snap_shot(url,filename):
 
@@ -13,6 +13,8 @@ def snap_shot(url,filename):
     driver = webdriver.Chrome(options=options)
 
     driver.get(url)
+
+    time.sleep(3)
 
     driver.save_screenshot(filename)
 

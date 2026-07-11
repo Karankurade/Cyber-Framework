@@ -17,6 +17,8 @@ def dir_search(name,target,wordlist):
 
     os.makedirs(filename, exist_ok = True)
 
+    hash_lock = threading.Lock()
+
     q = Queue()
     print_lock = threading.Lock()
 
@@ -72,40 +74,79 @@ def dir_search(name,target,wordlist):
     def worker():
 
         while not q.empty():
+
             try:
                 word = q.get_nowait()
             except:
                 break
             try:
+                new_url1 = urljoin(new_url+'/', word)
+                filename1 = os.path.join(
+                    filename,
+                    word.replace("/","_") + ".png"
+                )
 
-                new_url1 = urljoin(new_url+'/',word)
+                response = requests.get(
+                    new_url1,
+                    headers=header,
+                    timeout=5,
+                    allow_redirects=True
+                )
 
-                filename1  = os.path.join(filename+'/',word+'.png')
+                if response.status_code == 200:
+                    snap_shot(
+                        new_url1,
+                        filename1
+                    )
+                    with open(filename1,"rb") as image:
+                        current_hash = hashlib.sha256(
+                            image.read()
+                        ).hexdigest()
 
-                response = requests.get(new_url1,headers=header,timeout=5,allow_redirects = False)
+                    duplicate = False
 
-                current_hash  = hashlib.md5(response.text.encode()).hexdigest()
+                    with hash_lock:
+                        if current_hash in visited_img:
+                            duplicate = True
+                        else:
+                            visited_img.add(current_hash)
 
-                if response.status_code in [200,301,302,500]:
-                    if current_hash not in visited_img:
-                        visited_img.add(current_hash)
-                        print(current_hash)
-                        snapshot1 = snap_shot(new_url1,filename1)
-                        with print_lock:
-                            result.append({
-                                "url": new_url1,
-                                'file_path': filename1,
-                                "status code": response.status_code
-                                })
-                    if response.status_code in [301,302]:
-                        with print_lock:
-                            result.append({
-                                "url": new_url1,
-                                "file_path":"",
-                                "status code": response.status_code
-                                })
+                    if duplicate:
+                        os.remove(filename1)
+                        continue
+
+                    with print_lock:
+                        result.append({
+                            "url":new_url1,
+                            "file_path":filename1,
+                            "status code":response.status_code
+                        })
+
+                elif response.status_code in [301,302]:
+                    with print_lock:
+
+                        result.append({
+
+                            "url":new_url1,
+
+                            "file_path":"",
+
+                            "status code":response.status_code
+
+                        })
+
+
+                elif response.status_code in [403,500]:
+                    with print_lock:
+                        result.append({
+                            "url":new_url1,
+                            "file_path":"",
+                            "status code":response.status_code
+                        })
+
             except Exception as e:
-                print(f'error at {e}')
+                print(f"error at {e}")
+
             finally:
                 q.task_done()
 
@@ -120,5 +161,6 @@ def dir_search(name,target,wordlist):
     q.join()
 
     return result
+
 
 
