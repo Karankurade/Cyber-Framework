@@ -103,7 +103,6 @@ def dir_search(name,target,wordlist):
                         else:
                             visited_img.add(page_hash)
                     if duplicate:
-                        print(f"Duplicate page: {new_url1}")
                         continue
                     snap_shot(new_url1,filename1)
 
