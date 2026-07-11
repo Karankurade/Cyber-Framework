@@ -91,7 +91,7 @@ def dir_search(name,target,wordlist):
                     new_url1,
                     headers=header,
                     timeout=5,
-                    allow_redirects=True
+                    allow_redirects=False
                 )
 
                 if response.status_code == 200:
