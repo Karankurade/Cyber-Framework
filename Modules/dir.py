@@ -133,7 +133,6 @@ def dir_search(name,target,wordlist):
                             "file_path":"",
                             "status code":response.status_code
                         })
-                print(f"Visited hash:{len(visited_img)}")
 
             except Exception as e:
                 print(f"error at {e}")
