@@ -11,6 +11,7 @@ from Modules.http_status import webpage_status
 import threading, os, shutil , secrets
 from Modules.crawler import Scraper
 from Modules.subdomain import subdomain_finder
+from concurrent.futures import ThreadPoolExecutor
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
@@ -483,12 +484,29 @@ def subdomain(name,ip_addr,scan_id):
 
         wordlist = user.userSettings.subd_wordlist
 
-        for target in ip_addr:
-            result = subdomain_finder(name,target,wordlist)
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            futures = []
+            for target in ip_addr:
+                futures.append(
+                    executor.submit(
+                        subdomain_finder,
+                        name,
+                        target,
+                        wordlist
+                    )
+                )
 
-            for link in result:
-                new_subd = Subdomains(url=link['url'],status=link['status'],server=link['server'],length=link['length'],path=link['path'])
-                scan.subdomain.append(new_subd)
+            for future in futures:
+                result = future.result()
+                for link in result:
+                    new_subd = Subdomains(
+                        url=link['url'],
+                        status=link['status'],
+                        server=link['server'],
+                        length=link['length'],
+                        path=link['path']
+                    )
+                    scan.subdomain.append(new_subd)
         db.session.commit()
         scan.scan_progess = 100
         scan.scan_status = "Completed"

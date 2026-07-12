@@ -10,15 +10,17 @@ def webpage_status(target):
     https = False
     try:
         url = f"http://{target}/"
-        requests.get(url,headers=header,timeout=5)
-        http = True
+        response=requests.get(url,headers=header,timeout=5)
+        if response.status_code:
+            http = True
     except:
         pass
 
     try:
         url = f"https://{target}/"
-        requests.get(url,headers=header,timeout=5)
-        https = True
+        response=requests.get(url,headers=header,timeout=5)
+        if response.status_code:
+            https = True
     except:
         pass
 

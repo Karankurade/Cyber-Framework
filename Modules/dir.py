@@ -13,9 +13,6 @@ def dir_search(name,target,wordlist):
 
     filename = f'static/screenshot/{name}_{target}'
 
-    print(f"filename:- {filename}")
-    print(f"wordlist:- {wordlist}")
-
     os.makedirs(filename, exist_ok = True)
 
     hash_lock = threading.Lock()
@@ -74,7 +71,7 @@ def dir_search(name,target,wordlist):
 
     def worker():
 
-        while not q.empty():
+        while True:
 
             try:
                 word = q.get_nowait()
@@ -151,6 +148,11 @@ def dir_search(name,target,wordlist):
     q.join()
 
     return result
+
+
+
+
+
 
 
 
