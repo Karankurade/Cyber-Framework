@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Endpoint Discovery</title>
+      <link rel="stylesheet"
+         href="{{ url_for('static', filename='css/subdomain.css') }}">
+      <link rel="stylesheet"
+         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+   </head>
+   <body>
+      <div class="page">
+         <div class="topbar">
+            <div>
+               <h1>
+                  <i class="fa-solid fa-route"></i>
+                  Endpoint Discovery
+               </h1>
+               <p>
+                  Discovered endpoints for
+                  <b>{{ scan.target.target_name }}</b>
+               </p>
+            </div>
+            <div class="buttons">
+               <a href="/dashboard">
+               <i class="fa-solid fa-house"></i>
+               Dashboard
+               </a>
+               <a href="/Scan_History">
+               <i class="fa-solid fa-clock-rotate-left"></i>
+               History
+               </a>
+            </div>
+         </div>
+         <div class="filter-box">
+            <h2>
+               <i class="fa-solid fa-filter"></i>
+               Filters
+            </h2>
+            <div class="filters">
+               <input type="text"
+                  id="search"
+                  placeholder="Search endpoint...">
+               <select id="statusFilter">
+                  <option value="all">
+                     All Status
+                  </option>
+                  <option value="200">
+                     200 OK
+                  </option>
+                  <option value="301">
+                     301 Redirect
+                  </option>
+                  <option value="302">
+                     302 Redirect
+                  </option>
+                  <option value="403">
+                     403 Forbidden
+                  </option>
+                  <option value="500">
+                     500 Server Error
+                  </option>
+               </select>
+               <select id="lengthFilter">
+                   <option value="all">
+                        All Lengths
+                    </option>
+                    <option value = "Min_value">
+                        Min Length
+                    </option>
+                    <option value = "Max_value">
+                        Max Length
+                    </option>
+                </select>
+            </div>
+         </div>
+         <div class="table-card">
+            <table>
+               <thead>
+                  <tr>
+                     <th>Status</th>
+                     <th>Endpoint</th>
+                     <th>Server</th>
+                     <th>Length</th>
+                     <th>Screenshot</th>
+                     <th>Action</th>
+                  </tr>
+               </thead>
+               <tbody id="endpointTable">
+                  {% for sub in scan.subdomain %}
+                  <tr class="endpoint-row"
+                     data-status="{{sub.status}}"
+                     data-server="{{sub.server}}"
+                     data-length="{{sub.length}}">
+                     <td>
+                        <span class="status status-{{sub.status}}">
+                        {{sub.status}}
+                        </span>
+                     </td>
+                     <td>
+                        <div class="url">
+                           <i class="fa-solid fa-link"></i>
+                           {{sub.url}}
+                        </div>
+                     </td>
+                     <td>
+                        {{sub.server}}
+                     </td>
+                     <td>
+                        {{sub.length}} Bytes
+                     </td>
+                     <td>
+                        {% if sub.path %}
+                        <img class="screenshot"
+                           src="../{{sub.path}}"
+                           alt="Screenshot">
+                        {% else %}
+                        <span>
+                        No Screenshot
+                        </span>
+                        {% endif %}
+                     </td>
+                     <td>
+                        <a href="{{sub.url}}"
+                           target="_blank"
+                           class="visit">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        Visit
+                        </a>
+                     </td>
+                  </tr>
+                  {% endfor %}
+               </tbody>
+            </table>
+         </div>
+      </div>
+      <script src="{{url_for('static',filename='js/subdomain.js')}}"></script>
+   </body>
+</html>

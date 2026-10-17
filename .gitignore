@@ -1,0 +1,12 @@
+venv/
+__pycache__/
+*.pyc
+*.db
+*.sqlite3
+*.key
+.env
+.vscode/
+.idea/
+logs/*
+!logs/.gitkeep
+operator.key

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<head>
+	<title>Login Page</title>
+
+	<link rel='stylesheet' href="{{ url_for('static', filename='css/login_form.css') }}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+	{% with messages = get_flashed_messages(with_categories=True) %}
+
+	    {% if messages %}
+
+	        {% for category, message in messages %}
+
+		        <div class="alert alert-{{ category }}">
+
+		            <i class="fa-solid fa-circle-info"></i>
+
+		            {{ message }}
+
+		        </div>
+
+	        {% endfor %}
+
+	    {% endif %}
+
+	{% endwith %}
+	<img src="{{ url_for('static',filename='assets/login.jpeg')}}"  alt='Login_bg_image'>
+	<div class='login-container'>
+		<div class='login-headers'>
+			<h3>Login Form</h3>
+		</div>
+		<form action='/login' method='POST' class='login-form'>
+			<input type='text' name='username' placeholder='Enter username' autocomplete='on'>
+			<input type='password' name='password' placeholder='Enter Password' required autocomplete="off">
+			<button type='submit'>login</button>
+		</form>
+	</div>
+
+
+</body>
+</html>
+

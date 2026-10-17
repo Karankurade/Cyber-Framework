@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CyberFramework - Settings</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/setting.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+            <div class="alert alert-{{ category }}">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                {{ message }}
+
+            </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+    <div class="settings-page">
+
+        <aside class="sidebar">
+
+            <div class="logo">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                <span>CyberFramework</span>
+
+            </div>
+
+            <h2>Settings</h2>
+
+            <button class="menu-btn"
+                    onclick="showTab('password')">
+
+                <i class="fa-solid fa-key"></i>
+
+                Change Password
+
+            </button>
+
+            <button class="menu-btn"
+                    onclick="showTab('mfa')">
+
+                <i class="fa-solid fa-lock"></i>
+
+                Multi-Factor Authentication
+
+            </button>
+
+            <button class="menu-btn"
+                    onclick="showTab('wordlist')">
+
+                <i class="fa-solid fa-file-lines"></i>
+
+                Wordlists
+
+            </button>
+
+            <button class="menu-btn"
+                    onclick="showTab('theme')">
+
+                <i class="fa-solid fa-palette"></i>
+
+                Theme
+
+            </button>
+
+            <button class="menu-btn"
+                    onclick="showTab('storage')">
+
+                <i class="fa-solid fa-hard-drive"></i>
+
+                Storage
+
+            </button>
+
+            <a href="/dashboard"
+            class="dashboard-btn">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Dashboard
+
+            </a>
+
+        </aside>
+
+        <main class="content">
+
+            <div class="page-header">
+
+                <h1>
+
+                    <i class="fa-solid fa-gear"></i>
+
+                    Settings
+
+                </h1>
+
+                <p>
+
+                    Manage your CyberFramework preferences and security options.
+
+                </p>
+
+            </div>
+
+            <!-- PASSWORD -->
+
+            <div id="password"
+                class="tab-content active">
+
+                <div class="setting-card">
+
+                    <h2>
+
+                        <i class="fa-solid fa-key"></i>
+
+                        Change Password
+
+                    </h2>
+
+                    <form method="POST"
+                        action="/Settings">
+
+                        <div class="form-group">
+
+                            <label>
+
+                                Current Password
+
+                            </label>
+
+                            <input type="password"
+                                name="old-password"
+                                required>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>
+
+                                New Password
+
+                            </label>
+
+                            <input type="password"
+                                name="new-password"
+                                required>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>
+
+                                Confirm Password
+
+                            </label>
+
+                            <input type="password"
+                                name="new1-password"
+                                required>
+
+                        </div>
+
+                        <button type="submit"
+                                class="save-btn">
+
+                            <i class="fa-solid fa-floppy-disk"></i>
+
+                            Save Password
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <!-- MFA -->
+
+            <div id="mfa"
+                class="tab-content">
+
+                <div class="setting-card">
+
+                    <h2>
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                        Multi-Factor Authentication
+
+                    </h2>
+
+                    <form method="POST"
+                        action="/change_mfa">
+
+                        <div class="toggle-row">
+
+                            <span>
+
+                                Enable MFA
+
+                            </span>
+
+                            <label class="switch">
+
+                                <input type="checkbox"
+                                    name="mfa-enable"
+                                    {% if user.mfa %}checked{% endif %}>
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+                        <p class="status-text">
+
+                            {% if user.mfa %}
+
+                                MFA is currently enabled.
+
+                            {% else %}
+
+                                MFA is currently disabled.
+
+                            {% endif %}
+
+                        </p>
+
+                        <button class="save-btn"
+                                type="submit">
+
+                            <i class="fa-solid fa-floppy-disk"></i>
+
+                            Save Changes
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+                <!-- WORDLIST -->
+
+            <div id="wordlist"
+                class="tab-content">
+
+                <div class="setting-card">
+
+                    <h2>
+
+                        <i class="fa-solid fa-file-lines"></i>
+
+                        Wordlist Settings
+
+                    </h2>
+
+                    <p class="status-text">
+
+                        Configure the default wordlist used for directory
+                        enumeration and brute-force modules.
+
+                    </p>
+
+                    <form method="POST"
+                        action="/wordlist_setting">
+
+                        <div class="form-group">
+
+                            <label>
+
+                                Dir Wordlist
+
+                            </label>
+
+                            <input type="text"
+                                name="dir_wordlist"
+                                placeholder="Current: {{ user.dir_wordlist }}">
+
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                Subdomain Wordlist
+                            </label>
+                            <input type="text" name="subd_wordlist" placeholder="Current: {{user.subd_wordlist}}">
+                        </div>
+
+                        <button class="save-btn"
+                                type="submit">
+
+                            <i class="fa-solid fa-upload"></i>
+
+                            Save Wordlist
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <!-- THEME -->
+
+            <div id="theme"
+                class="tab-content">
+
+                <div class="setting-card">
+
+                    <h2>
+
+                        <i class="fa-solid fa-palette"></i>
+
+                        Appearance
+
+                    </h2>
+
+                    <p class="status-text">
+
+                        Choose how CyberFramework looks while you work.
+
+                    </p>
+
+                    <form>
+
+                        <div class="form-group">
+
+                            <label>
+
+                                Theme
+
+                            </label>
+
+                            <select>
+
+                                <option selected>
+
+                                    Dark
+
+                                </option>
+
+                                <option>
+
+                                    Light
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <button class="save-btn"
+                                type="button">
+
+                            <i class="fa-solid fa-floppy-disk"></i>
+
+                            Save Theme
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <!-- STORAGE -->
+
+            <div id="storage"
+                class="tab-content">
+
+                <div class="setting-card">
+
+                    <h2>
+
+                        <i class="fa-solid fa-hard-drive"></i>
+
+                        Storage Information
+
+                    </h2>
+
+                    <div class="storage-grid">
+
+                        <div class="storage-item">
+
+                            <i class="fa-solid fa-bullseye"></i>
+
+                            <h4>
+
+                                Total Targets
+
+                            </h4>
+
+                            <p>
+
+                                {{ total_target }}
+
+                            </p>
+
+                        </div>
+
+                        <div class="storage-item">
+
+                            <i class="fa-solid fa-radar"></i>
+
+                            <h4>
+
+                                Total Scans
+
+                            </h4>
+
+                            <p>
+
+                                {{ total_target }}
+
+                            </p>
+
+                        </div>
+
+                        <div class="storage-item">
+
+                            <i class="fa-solid fa-image"></i>
+
+                            <h4>
+
+                                Screenshots
+
+                            </h4>
+
+                            <p>
+
+                                {{ screenshot }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                        <div class="setting-card danger-zone">
+
+                    <h2>
+
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+
+                        Danger Zone
+
+                    </h2>
+
+                    <p class="status-text">
+
+                        These actions are permanent and cannot be undone.
+
+                    </p>
+
+                    <form method="POST"
+                        action="/delete_screenshots">
+
+                        <button type="submit"
+                                class="delete-btn">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                            Delete All Screenshots
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <div class="setting-card">
+
+                    <h2>
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                        System Information
+
+                    </h2>
+
+                    <div class="storage-grid">
+
+                        <div class="storage-item">
+
+                            <i class="fa-solid fa-user"></i>
+
+                            <h4>
+
+                                Username
+
+                            </h4>
+
+                            <p>
+
+                                {{ session.user }}
+
+                            </p>
+
+                        </div>
+
+                        <div class="storage-item">
+
+                            <i class="fa-solid fa-shield-halved"></i>
+
+                            <h4>
+
+                                MFA Status
+
+                            </h4>
+
+                            <p>
+
+                                {% if user.mfa %}
+
+                                    Enabled
+
+                                {% else %}
+
+                                    Disabled
+
+                                {% endif %}
+
+                            </p>
+
+                        </div>
+
+                        <div class="storage-item">
+
+                            <i class="fa-solid fa-file-lines"></i>
+
+                            <h4>
+
+                                Dir Wordlist
+
+                            </h4>
+
+                            <p>
+
+                                {{ user.dir_wordlist }}
+
+                            </p>
+                        </div>
+                        <div class="storage-item">
+
+                                <i class="fa-solid fa-file-lines"></i>
+                                <h4>
+                                    Subdomain Wordlist
+                                </h4>
+                                <p>
+                                    {{user.subd_wordlist}}
+                                </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <script src="{{url_for('static',filename='js/setting.js')}}"> </script>
+
+    </script>
+
+</body>
+
+</html>

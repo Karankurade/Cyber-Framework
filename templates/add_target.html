@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Target</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/add_target.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+	{% with messages = get_flashed_messages(with_categories=True) %}
+
+	    {% if messages %}
+
+	        {% for category, message in messages %}
+
+		        <div class="alert alert-{{ category }}">
+
+		            <i class="fa-solid fa-circle-info"></i>
+
+		            {{ message }}
+
+		        </div>
+
+	        {% endfor %}
+
+	    {% endif %}
+
+	{% endwith %}
+    <div class="page">
+
+        <div class="sidebar">
+
+            <div class="logo">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                <h2>CyberFramework</h2>
+
+            </div>
+
+            <ul>
+
+                <li>
+
+                    <a href="/dashboard">
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                        Dashboard
+
+                    </a>
+
+                </li>
+
+                <li class="active">
+
+                    <a href="/Add_Target">
+
+                        <i class="fa-solid fa-plus"></i>
+
+                        Add Target
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="/Scan_History">
+
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+
+                        Scan History
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="/Reports">
+
+                        <i class="fa-solid fa-file-lines"></i>
+
+                        Reports
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="/Settings">
+
+                        <i class="fa-solid fa-gear"></i>
+
+                        Settings
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="/logout">
+
+                        <i class="fa-solid fa-right-from-bracket"></i>
+
+                        Logout
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+        <div class="main">
+
+            <div class="topbar">
+
+                <div>
+
+                    <h1>Add New Target</h1>
+
+                    <p>Configure a new security assessment target.</p>
+
+                </div>
+
+                <div class="user">
+
+                    <i class="fa-solid fa-user-shield"></i>
+
+                    <span>{{ session['user'] }}</span>
+
+                </div>
+
+            </div>
+
+            <div class="form-card">
+
+                <div class="card-header">
+
+                    <h2>
+
+                        <i class="fa-solid fa-server"></i>
+
+                        Target Configuration
+
+                    </h2>
+
+                    <p>
+
+                        Enter the information required to begin a scan.
+
+                    </p>
+
+                </div>
+
+                <form method="POST">
+
+                    <div class="form-group">
+
+                        <label for="add_target">
+
+                            Target Address
+
+                        </label>
+
+                        <div class="input-box">
+
+                            <i class="fa-solid fa-globe"></i>
+
+                            <input
+                                type="text"
+                                id="add_target"
+                                name="add_target"
+                                placeholder="example.com or 192.168.1.10"
+                                required>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="form-group">
+
+                            <label for="type">
+
+                                Scan Profile
+
+                            </label>
+
+                            <select
+                                id="type"
+                                name="type">
+
+                                <option value="" disabled selected>
+
+                                    Select Profile
+
+                                </option>
+
+                                <option value="normal">
+
+                                    Normal Scan
+
+                                </option>
+
+                                <option value="advance">
+
+                                    Advanced Scan
+
+                                </option>
+
+                                <option value="extreme">
+
+                                    Extreme Scan
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="custom-tag">
+
+                                Target Tag
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="custom-tag"
+                                name="custom-tag"
+                                placeholder="Production, Internal, External">
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Save Nmap Output
+
+                        </label>
+
+                        <div class="radio-group">
+
+                            <label class="radio-option">
+
+                                <input
+                                    type="radio"
+                                    name="nmap-output"
+                                    value="yes">
+
+                                <span>Yes</span>
+
+                            </label>
+
+                            <label class="radio-option">
+
+                                <input
+                                    type="radio"
+                                    name="nmap-output"
+                                    value="no"
+                                    checked>
+
+                                <span>No</span>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                    <div class="info-box">
+
+                        <div>
+
+                            <i class="fa-solid fa-circle-info"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3>Scan Profiles</h3>
+
+                            <ul>
+
+                                <li><strong>Normal</strong> - Fast scan for common services.</li>
+
+                                <li><strong>Advanced</strong> - Version detection and service enumeration.</li>
+
+                                <li><strong>Extreme</strong> - Full aggressive scan with maximum enumeration.</li>
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                    <div class="button-group">
+
+                        <button
+                            type="reset"
+                            class="reset-btn">
+
+                            <i class="fa-solid fa-rotate-left"></i>
+
+                            Reset
+
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="submit-btn">
+
+                            <i class="fa-solid fa-play"></i>
+
+                            Start Scan
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

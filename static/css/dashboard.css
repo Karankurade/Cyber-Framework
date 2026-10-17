@@ -1,0 +1,461 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",Arial,sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:#e2e8f0;
+}
+
+.sidebar{
+
+    position:fixed;
+
+    left:0;
+    top:0;
+
+    width:260px;
+    height:100vh;
+
+    background:#111827;
+
+    border-right:1px solid #1e293b;
+
+}
+
+.logo{
+
+    height:80px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:12px;
+
+    border-bottom:1px solid #1e293b;
+
+}
+
+.logo i{
+
+    color:#06b6d4;
+
+    font-size:28px;
+
+}
+
+.logo h2{
+
+    color:white;
+
+    font-size:24px;
+
+}
+
+.sidebar ul{
+
+    list-style:none;
+
+    margin-top:25px;
+
+}
+
+.sidebar li{
+
+    margin:8px 15px;
+
+}
+
+.sidebar a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    text-decoration:none;
+
+    color:#94a3b8;
+
+    padding:15px;
+
+    border-radius:10px;
+
+    transition:.3s;
+
+}
+
+.sidebar a:hover{
+
+    background:#1e293b;
+
+    color:white;
+
+}
+
+.sidebar li.active a{
+
+    background:#06b6d4;
+
+    color:white;
+
+}
+
+.sidebar a i{
+
+    width:22px;
+
+    text-align:center;
+
+}
+
+.main{
+
+    margin-left:260px;
+
+    padding:35px;
+
+}
+
+.navbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:40px;
+
+}
+
+.navbar h1{
+
+    font-size:34px;
+
+    color:white;
+
+}
+
+.navbar p{
+
+    color:#94a3b8;
+
+    margin-top:6px;
+
+}
+
+.profile{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    background:#1e293b;
+
+    padding:12px 20px;
+
+    border-radius:12px;
+
+}
+
+.profile i{
+
+    color:#06b6d4;
+
+    font-size:22px;
+
+}
+
+
+.stats{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:25px;
+
+    margin-bottom:40px;
+
+}
+
+.card{
+
+    background:#1e293b;
+
+    text-decoration:none;
+
+    color:white;
+
+    padding:30px;
+
+    border-radius:15px;
+
+    transition:.3s;
+
+    border:1px solid transparent;
+
+}
+
+.card:hover{
+
+    transform:translateY(-8px);
+
+    border-color:#06b6d4;
+
+    box-shadow:0 15px 30px rgba(6,182,212,.25);
+
+}
+
+.card i{
+
+    font-size:34px;
+
+    color:#06b6d4;
+
+    margin-bottom:20px;
+
+}
+
+.card h2{
+
+    font-size:42px;
+
+    margin-bottom:10px;
+
+}
+
+.card p{
+
+    color:#94a3b8;
+
+}
+
+
+.content{
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:30px;
+
+}
+
+.activity,
+.quick{
+
+    background:#1e293b;
+
+    border-radius:15px;
+
+    padding:30px;
+
+}
+
+.activity h2,
+.quick h2{
+
+    margin-bottom:25px;
+
+    color:white;
+
+}
+
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+th{
+
+    color:#94a3b8;
+
+    text-align:left;
+
+    padding:15px;
+
+    border-bottom:1px solid #334155;
+
+}
+
+td{
+
+    padding:18px 15px;
+
+    border-bottom:1px solid #273449;
+
+}
+
+tr:hover{
+
+    background:#253347;
+
+}
+
+
+.Completed{
+
+    color:#22c55e;
+
+    font-weight:600;
+
+}
+
+.Running{
+
+    color:#f59e0b;
+
+    font-weight:600;
+
+}
+
+.starting{
+
+    color:#38bdf8;
+
+    font-weight:600;
+
+}
+
+
+.quick{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.quick a{
+
+    text-decoration:none;
+
+    color:white;
+
+    background:#334155;
+
+    padding:16px;
+
+    border-radius:10px;
+
+    margin-bottom:15px;
+
+    transition:.3s;
+
+    text-align:center;
+
+    font-weight:600;
+
+}
+
+.quick a:hover{
+
+    background:#06b6d4;
+
+    transform:translateX(6px);
+
+}
+
+::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#111827;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#475569;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#06b6d4;
+
+}
+
+@media(max-width:1000px){
+
+    .content{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+@media(max-width:850px){
+
+    .sidebar{
+
+        width:90px;
+
+    }
+
+    .logo h2{
+
+        display:none;
+
+    }
+
+    .sidebar a{
+
+        justify-content:center;
+
+    }
+
+    .sidebar a span{
+
+        display:none;
+
+    }
+
+    .main{
+
+        margin-left:90px;
+
+    }
+}
+
+@media(max-width:650px){
+
+    .navbar{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:20px;
+
+    }
+
+    .stats{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
