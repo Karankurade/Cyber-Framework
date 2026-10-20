@@ -10,7 +10,7 @@ from Modules.screen_shot import snap_shot
 def Scraper(name, target, max_urls=300, depth=3):
     """
     Crawls via Katana, pre-filters dead links with fast requests,
-    and captures screenshots concurrently using an optimal thread count.
+    and yields screenshot results incrementally in batches of 100.
     """
     if not shutil.which("katana"):
         raise RuntimeError("Katana was not found. Install it and ensure it is in PATH.")
@@ -32,7 +32,7 @@ def Scraper(name, target, max_urls=300, depth=3):
     if base_allowed_host.startswith("www."):
         base_allowed_host = base_allowed_host[4:]
 
-    dir_name = os.path.join("static", "webpage_screenshot",f"{name}_{target}")
+    dir_name = os.path.join("static", "webpage_screenshot", f"{name}_{target}")
     os.makedirs(dir_name, exist_ok=True)
 
     command = [
@@ -96,16 +96,13 @@ def Scraper(name, target, max_urls=300, depth=3):
     if not urls:
         urls = [target]
 
-    # Worker function with pre-check
-    def process_screenshot(index, current_url):
-        # Fast pre-check: verify if page is actually live before launching Chrome
+    # Worker function for individual URL screenshots
+    def process_screenshot(current_url):
         try:
             resp = requests.get(current_url, timeout=3, headers={"User-Agent": "Mozilla/5.0"})
             if resp.status_code >= 400:
-                print(f"[SKIP] Status {resp.status_code}: {current_url}")
                 return None
         except:
-            print(f"[SKIP] Unreachable: {current_url}")
             return None
 
         parsed_current = urlparse(current_url)
@@ -127,13 +124,10 @@ def Scraper(name, target, max_urls=300, depth=3):
         url_hash = hashlib.sha256(current_url.encode("utf-8")).hexdigest()[:8]
         filename = os.path.join(dir_name, f"{safe_name[:40]}_{url_hash}.png")
 
-        print(f"[{index}/{len(urls)}] Screenshot: {current_url}")
-
         try:
             snap_shot(current_url, filename)
 
             if os.path.isfile(filename):
-                print(f"[OK] Saved: {filename}")
                 return {
                     "url": current_url,
                     "path": filename,
@@ -144,19 +138,30 @@ def Scraper(name, target, max_urls=300, depth=3):
         
         return None
 
-    results = []
-    print(f"[INFO] Processing {len(urls)} URLs with pre-filtering...")
-    
-    # Safe sweet-spot for high-limit scans (Set to 5. Increase to 6 if you have 16GB+ RAM)
-    max_workers = 5 
-    
-    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = [executor.submit(process_screenshot, i, url) for i, url in enumerate(urls, start=1)]
-        
-        for future in concurrent.futures.as_completed(futures):
-            res = future.result()
-            if res:
-                results.append(res)
+    # --- BATCHED PROCESSING & YIELDING ---
+    batch_size = 100
+    total_urls = len(urls)
+    max_workers = 5
 
-    print(f"[DONE] Processed {len(urls)} URLs | Valid screenshots saved: {len(results)}")
-    return results
+    print(f"[INFO] Processing {total_urls} URLs in batches of {batch_size}...")
+
+    for i in range(0, total_urls, batch_size):
+        batch = urls[i:i + batch_size]
+        batch_num = (i // batch_size) + 1
+        total_batches = (total_urls + batch_size - 1) // batch_size
+
+        print(f"[INFO] Processing Scraper Batch {batch_num}/{total_batches} ({len(batch)} URLs)...")
+        batch_results = []
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = [executor.submit(process_screenshot, url) for url in batch]
+            
+            for future in concurrent.futures.as_completed(futures):
+                res = future.result()
+                if res:
+                    batch_results.append(res)
+
+        # Yield each batch results directly to app.py
+        yield batch_results
+
+    print(f"[DONE] Finished all scraper batches for {target}")

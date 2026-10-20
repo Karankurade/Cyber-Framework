@@ -448,14 +448,34 @@ def directories(scan_id):
             http,https = webpage_status(url)
             if http or https:
                 ip_addr.append(url)
-        for addr in ip_addr:
-            results = dir_search(name,addr,wordlist)
 
-            for page in results:
-                new_dir = Dirs(url=page['url'],path=page['file_path'],status=page['status code'])
-                scan.dirs.append(new_dir)
-            db.session.commit()
-        scan.scan_progess = 50
+        threading.Thread(target=subdomain,args=(name,ip_addr,scan_id,),daemon=True).start()
+
+        for addr in ip_addr:
+            print(f"[INFO] Starting directory search and batched screenshots on {addr}")
+
+            # Loop directly through the yielded batches from dir.py
+            for batch_results in dir_search(name, addr, wordlist):
+                try:
+                    for page in batch_results:
+                        new_dir = Dirs(
+                            url=page['url'],
+                            path=page['file_path'],
+                            status=page['status code'],
+                            scan_id=scan.Id
+                        )
+                        scan.dirs.append(new_dir)
+
+                    # Immediately commit this batch to the database!
+                    db.session.commit()
+                    print(f"[SUCCESS] Committed batch of {len(batch_results)} items to database. Dashboard updated!")
+
+                except Exception as e:
+                    db.session.rollback()
+                    print(f"[DATABASE ERROR] Failed to commit batch: {e}")
+
+       
+        scan.scan_progess += 25
         db.session.commit()
         web_scraper(name,ip_addr,scan_id)
 
@@ -465,16 +485,34 @@ def web_scraper(name,ip_addr,scan_id):
         scan  = Scan.query.get(scan_id)
 
         for target in ip_addr:
-            result = Scraper(name,target)
+            print(f"[INFO] Starting web scraping and batched screenshots on {target}")
 
-            for link in result:
-                new_dir = Scaper(url=link['url'],path=link['path'],status=link['status code'])
-                scan.scaper.append(new_dir)
-        db.session.commit()
-        scan.scan_progess = 75
+            # Consume the generator yielded from crawler.py batch-by-batch
+            for batch_results in Scraper(name, target):
+                try:
+                    for link in batch_results:
+                        new_dir = Scaper(
+                            url=link['url'],
+                            path=link['path'],
+                            status=link['status code'],
+                            scan_id=scan.Id
+                        )
+                        scan.scaper.append(new_dir)
+
+                    # Immediately commit each batch to SQLite
+                    db.session.commit()
+                    print(f"[SUCCESS] Committed scraper batch of {len(batch_results)} items to database. Dashboard updated!")
+
+                except Exception as e:
+                    db.session.rollback()
+                    print(f"[DATABASE ERROR] Failed to commit scraper batch: {e}")
+        scan.scan_progess += 25
         scan.scan_status = "Running"
         db.session.commit()
-        subdomain(name,ip_addr,scan_id)
+        if scan.scan_progess == 100:
+            scan.scan_status= "Completed"
+            scan.end_time = datetime.utcnow()
+            db.session.commit()
 
 def subdomain(name,ip_addr,scan_id):
     with app.app_context():
@@ -508,9 +546,7 @@ def subdomain(name,ip_addr,scan_id):
                     )
                     scan.subdomain.append(new_subd)
         db.session.commit()
-        scan.scan_progess = 100
-        scan.scan_status = "Completed"
-        scan.end_time = datetime.utcnow()
+        scan.scan_progess += 25
         db.session.commit()
 
 @app.route('/Scan_History', methods=['GET','POST'])
@@ -625,6 +661,7 @@ def history():
                     "name":target.target_name,
                     "id": scan.Id
                     })
+
 
     return render_template('history.html', targets = result)
 

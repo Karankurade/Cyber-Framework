@@ -38,7 +38,7 @@ def dir_search(name, target, wordlist):
             words = [line.strip() for line in f if line.strip() and not line.startswith("#")]
     except Exception as e:
         print(f"[ERROR] Failed to read wordlist: {e}")
-        return result
+        return
 
     raw_results = []
     lock = threading.Lock()
@@ -90,20 +90,20 @@ def dir_search(name, target, wordlist):
     if raw_results:
         status_counts = Counter(item["status code"] for item in raw_results)
         total_items = len(raw_results)
-        
+
         excluded_statuses = set()
-        pert_value= []
+        pert_value = []
         print("[INFO] Status Code Distribution:")
         for code, count in status_counts.items():
             percentage = (count / total_items) * 100
-            print(f"       -> Status {code}: {count} occurrences ({percentage:.1f}% of total)")
+            print(f"        -> Status {code}: {count} occurrences ({percentage:.1f}% of total)")
             pert_value.append(percentage)
 
             max_pert = max(pert_value)
 
             # If a single status code accounts for more than 75% of ALL responses 
             # and there are more than 50 occurrences, treat it as a flood/noise and exclude it!
-            if  max_pert==percentage and code not in [200,403]:
+            if max_pert == percentage and code != 200:
                 excluded_statuses.add(code)
                 print(f"[!] AUTO-EXCLUDING status code {code} because it floods {percentage:.1f}% of the responses.")
 
@@ -114,49 +114,62 @@ def dir_search(name, target, wordlist):
 
     print(f"[INFO] Filtered targets for screenshots: {len(valid_targets)}")
 
-    # --- PHASE 2: Controlled Screenshots (Only for valid, non-flooded 200/403 pages) ---
-    def take_screenshot(item):
-        url = item["url"]
-        status = item["status code"]
-        clean_word = item["word"]
+    # --- PHASE 2: Controlled Screenshots (Yielding batch-by-batch) ---
+    batch_size = 100
+    total_targets = len(valid_targets)
 
-        if status in [301, 302, 404, 500]:
+    for i in range(0, total_targets, batch_size):
+        batch = valid_targets[i:i + batch_size]
+        batch_num = (i // batch_size) + 1
+        total_batches = (total_targets + batch_size - 1) // batch_size
+
+        print(f"[INFO] Processing Batch {batch_num}/{total_batches} ({len(batch)} URLs)...")
+
+        batch_results = []
+
+        def take_screenshot(item):
+            url = item["url"]
+            status = item["status code"]
+            clean_word = item["word"]
+
+            if status in [301, 302, 404, 500]:
+                return {
+                    "url": url,
+                    "file_path": "",
+                    "status code": status
+                }
+
+            safe_filename_part = clean_word.replace("/", "_").replace(".", "_").replace("?", "_").replace("&", "_")
+            if not safe_filename_part:
+                safe_filename_part = "index"
+
+            file_path = os.path.join(filename, f"{safe_filename_part}.png")
+
+            try:
+                snap_shot(url, file_path)
+                if os.path.isfile(file_path):
+                    return {
+                        "url": url,
+                        "file_path": file_path,
+                        "status code": status
+                    }
+            except Exception as e:
+                print(f"[SCREENSHOT ERROR] {url}: {e}")
+
             return {
                 "url": url,
                 "file_path": "",
                 "status code": status
             }
 
-        safe_filename_part = clean_word.replace("/", "_").replace(".", "_").replace("?", "_").replace("&", "_")
-        if not safe_filename_part:
-            safe_filename_part = "index"
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            futures = [executor.submit(take_screenshot, item) for item in batch]
+            for future in concurrent.futures.as_completed(futures):
+                res = future.result()
+                if res:
+                    batch_results.append(res)
 
-        file_path = os.path.join(filename, f"{safe_filename_part}.png")
+        # YIELD the finished batch straight back to app.py!
+        yield batch_results
 
-        try:
-            snap_shot(url, file_path)
-
-            if os.path.isfile(file_path):
-                return {
-                    "url": url,
-                    "file_path": file_path,
-                    "status code": status
-                }
-        except Exception as e:
-            print(f"[SCREENSHOT ERROR] {url}: {e}")
-
-        return {
-            "url": url,
-            "file_path": "",
-            "status code": status
-        }
-
-    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-        futures = [executor.submit(take_screenshot, item) for item in valid_targets]
-        for future in concurrent.futures.as_completed(futures):
-            res = future.result()
-            if res:
-                result.append(res)
-
-    print(f"[DONE] Finished! Total results collected: {len(result)}")
-    return result
+    print(f"[DONE] Finished all batches for {target}!")
